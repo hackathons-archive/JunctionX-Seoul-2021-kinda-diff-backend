@@ -6,7 +6,7 @@ const {
   getGameRoom,
   putGameRoom,
   deleteGameRoom,
-} = require('/infrastucture/dynamo.repository.js');
+} = require('/lambda-functions/infrastucture/dynamo-repository.js');
 
 const response = {
   statusCode: 200,
@@ -61,8 +61,8 @@ exports.join = async (event, context, callback) => {
 
 exports.createGameRoom = async (event, context, callback) => {
   let roomId = uuidv4();
-  // Look up the meeting by its title. If it does not exist, create the meeting.
   let gameRoom = await getGameRoom(roomId);
+  // Look up the meeting by its roomId. If it does not exist, exit
   if (gameRoom) {
     response.statusCode = 404;
     response.body = 'room already exist, try again';

@@ -11,7 +11,7 @@ custom:
 
 functions:
   JoinGameRoom:
-    handler: /lambda-functions/application/room.handler.join
+    handler: /lambda-functions/application/room-handler.join
     role: GameRoomsRole
     environment:
       ROOM_TABLE_NAME: !Ref GameRooms
@@ -22,7 +22,7 @@ functions:
           method: GET
 
   CreateGameRoom:
-    handler: /lambda-functions/application/room.handler.createGameRoom
+    handler: /lambda-functions/application/room-handler.createGameRoom
     role: GameRoomsRole
     environment:
       ROOM_TABLE_NAME: !Ref GameRooms
@@ -33,7 +33,7 @@ functions:
           method: POST
 
   RemoveGameRoom:
-    handler: /lambda-functions/application/room.handler.endGameRoom
+    handler: /lambda-functions/application/room-handler.endGameRoom
     role: GameRoomsRole
     environment:
       ROOM_TABLE_NAME: !Ref GameRooms
@@ -59,9 +59,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: "roomId"
-            KeyType: HASH
-
-    GameRoomsRole:    
+            KeyType: HASHwdwdd
       Type: AWS::IAM::Role
       Properties:
         Path: "/"
