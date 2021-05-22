@@ -33,6 +33,7 @@ exports.index = async (event, context, callback) => {
   return response(200, 'text/html', fs.readFileSync('./index.html', {encoding: 'utf8'}));
 };
 
+<<<<<<< HEAD
 exports.join = async(event, context) => {
   const query = event.queryStringParameters;
   if (!query.title || !query.name || !query.region) {
@@ -92,6 +93,9 @@ exports.join = async(event, context) => {
     },
   }, null, 2));
 };
+=======
+
+>>>>>>> 51d5dec78e8018f2fc63c07015c63782a6180761
 
 exports.end = async (event, context) => {
   // Fetch the meeting by title

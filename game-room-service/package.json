@@ -1,0 +1,10 @@
+{
+  "name": "kinda-diff",
+  "version": "0.1.0",
+  "description": "Backend Impl",
+  "dependencies": {
+    "aws-sdk": "^2.886.0",
+    "uuid": "^8.3.2"
+  },
+  "license": "MIT",
+}
