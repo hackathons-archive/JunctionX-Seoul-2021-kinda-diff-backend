@@ -1,23 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: room
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
 frameworkVersion: '2'
 
 provider:
@@ -27,37 +8,6 @@ provider:
 
 custom:
   chime: "https://service.chime.aws.amazon.com"
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  patterns:
-#    - '!exclude-me.js'
-#    - '!exclude-me-dir/**'
-#    - include-me.js
-#    - include-me-dir/**
 
 functions:
   hello:
@@ -114,6 +64,31 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
+    ChimeRoomAccessPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: ChimeRoomAccess
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'chime:CreateMeeting'
+                - 'chime:DeleteMeeting'
+                - 'chime:GetMeeting'
+                - 'chime:ListMeetings'
+                - 'chime:BatchCreateAttendee'
+                - 'chime:CreateAttendee'
+                - 'chime:DeleteAttendee'
+                - 'chime:GetAttendee'
+                - 'chime:ListAttendees'
+              Resource: '*'
+        Roles:
+          - Ref: ChimeSdkJoinLambdaRole
+          - Ref: ChimeSdkAttendeeLambdaRole
+          - Ref: ChimeSdkEndLambdaRole
+          - Ref: ChimeSdkCreateMeetingLambdaRole
+          - Ref: AuthorizeFunctionRole
     GameRooms:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -121,18 +96,22 @@ resources:
         AttributeDefinitions:
           - AttributeName: "roomId"
             AttributeType: "S"
+          - AttributeName: "roomData"
+            AttributeType: "S"
+        TimeToLiveSpecification:
+          AttributeName: "TTL"
+          Enabled: true
         BillingMode: PAY_PER_REQUEST
         KeySchema:
-          - AttributeName: "Title"
+          - AttributeName: "roomId"
             KeyType: HASH
-
-    MeetingsRole:    
+    GameRoomsRole:    
       Type: AWS::IAM::Role
       Properties:
         Path: "/"
         Policies:
           -
-            PolicyName: "MeetingsRole"
+            PolicyName: "GameRoomsRole"
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
@@ -148,7 +127,7 @@ resources:
                     - "dynamodb:UpdateItem"
                     - "dynamodb:UpdateTable"
                     - "dynamodb:GetRecords"
-                  Resource: !GetAtt Meetings.Arn 
+                  Resource: !GetAtt GameRooms.Arn
         AssumeRolePolicyDocument:
             Version: "2012-10-17"
             Statement:
