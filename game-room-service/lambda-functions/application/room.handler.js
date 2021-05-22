@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB();
 const chime = new AWS.Chime({ region: 'us-east-1' });
 const { v4: uuidv4 } = require('uuid');
 chime.endpoint = new AWS.Endpoint(process.env.CHIME_ENDPOINT);
@@ -21,15 +20,15 @@ const response = {
 };
 
 exports.join = async (event, context, callback) => {
-  const query = event.queryStringParameters;
-  if (!query.roomId) {
+  const pathParam = event.pathParameters;
+  if (!pathParam.roomId) {
     response.statusCode = 400;
     response.body = 'Need parameters: roomId';
     callback(null, response);
     return;
   }
 
-  let gameRoom = await getGameRoom(query.roomId);
+  let gameRoom = await getGameRoom(pathParam.roomId);
   if (!gameRoom) {
     response.statusCode = 404;
     response.body = 'Invalid roomId';
@@ -42,7 +41,7 @@ exports.join = async (event, context, callback) => {
   const player = await chime
     .createAttendee({
       MeetingId: gameRoom.Meeting.MeetingId,
-      ExternalUserId: `${uuidv4().substring(0, 8)}#${query.name}`.substring(
+      ExternalUserId: `${uuidv4().substring(0, 8)}#${pathParam.name}`.substring(
         0,
         64
       ),
@@ -101,9 +100,9 @@ exports.createGameRoom = async (event, context, callback) => {
 
 exports.endRoom = async (event, context, callback) => {
   console.log('end game:', JSON.stringify(event, null, 2));
-  const query = event.queryStringParameters;
+  const pathParam = event.pathParameters;
 
-  if (!query.roomId) {
+  if (!pathParam.roomId) {
     console.log('end event > missing required fields: provide roomId');
     response.statusCode = 400;
     response.body = 'Must provide roomId';
@@ -112,7 +111,7 @@ exports.endRoom = async (event, context, callback) => {
   }
 
   response.statusCode = 200;
-  response.body = JSON.stringify(endGameRoom(query.roomId));
+  response.body = JSON.stringify(endGameRoom(pathParam.roomId));
   console.info('end Room > response:', JSON.stringify(response, null, 2));
   callback(null, response);
 };
