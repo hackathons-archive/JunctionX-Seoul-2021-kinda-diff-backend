@@ -1,5 +1,6 @@
 const ddb = new AWS.DynamoDB();
 const { ROOM_TABLE_NAME } = process.env;
+const oneDayFromNow = Math.floor(Date.now() / 1000) + 60 * 60 * 24;
 
 // Retrieves the meeting from the table by the meeting title
 async function getGameRoom(roomId) {
@@ -24,6 +25,9 @@ async function putGameRoom(roomId, gameRoom) {
       Item: {
         roomId: { S: roomId },
         roomData: { S: JSON.stringify(gameRoom) },
+        TTL: {
+          N: '' + oneDayFromNow,
+        },
       },
     })
     .promise();
