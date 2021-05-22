@@ -11,40 +11,55 @@ custom:
 
 functions:
   JoinGameRoom:
-    handler: /lambda-functions/application/room-handler.join
+    handler: lambda-functions/application/room-handler.room-handler.join
     role: GameRoomsRole
     environment:
       ROOM_TABLE_NAME: !Ref GameRooms
       CHIME_ENDPOINT: ${self:custom.chime}
+    package:
+      patterns: 
+        - lambda-functions/application/room-handler.js
+        - lambda-functions/infrastructure/dynamo-repository.js
     events:
       - http:
           path: /room/{roomId}
           method: GET
 
   CreateGameRoom:
-    handler: /lambda-functions/application/room-handler.createGameRoom
+    handler: lambda-functions/application/room-handler.createGameRoom
     role: GameRoomsRole
     environment:
       ROOM_TABLE_NAME: !Ref GameRooms
       CHIME_ENDPOINT: ${self:custom.chime}
+    package:
+      patterns: 
+        - lambda-functions/application/room-handler.js
+        - lambda-functions/infrastructure/dynamo-repository.js
     events:
       - http:
           path: /room
           method: POST
 
   RemoveGameRoom:
-    handler: /lambda-functions/application/room-handler.endGameRoom
+    handler: lambda-functions/application/room-handler.endGameRoom
     role: GameRoomsRole
     environment:
       ROOM_TABLE_NAME: !Ref GameRooms
       CHIME_ENDPOINT: ${self:custom.chime}
+    package:
+      patterns: 
+        - lambda-functions/application/room-handler.js
+        - lambda-functions/infrastructure/dynamo-repository.js
     events:
       - http:
           path: /room/{roomId}
           method: DELETE
 
   GetRandomCards:
-    handler: /lambda-functions/application/card-handler.getTwoRandomCards
+    handler: lambda-functions/application/card-handler.getTwoRandomCards
+    package:
+      patterns: 
+        - lambda-functions/application/card-handler.js
     events:
       - http:
           path: /card

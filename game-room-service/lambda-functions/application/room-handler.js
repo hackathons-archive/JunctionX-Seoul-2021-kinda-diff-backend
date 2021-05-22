@@ -6,7 +6,7 @@ const {
   getGameRoom,
   putGameRoom,
   deleteGameRoom,
-} = require('/lambda-functions/infrastucture/dynamo-repository.js');
+} = require('../infrastructure/dynamo-repository');
 
 const response = {
   statusCode: 200,

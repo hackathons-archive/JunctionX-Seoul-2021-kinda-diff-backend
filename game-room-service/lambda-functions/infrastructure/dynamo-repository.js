@@ -1,3 +1,4 @@
+const AWS = require('aws-sdk');
 const ddb = new AWS.DynamoDB();
 const { ROOM_TABLE_NAME } = process.env;
 const oneDayFromNow = Math.floor(Date.now() / 1000) + 60 * 60 * 24;
@@ -44,4 +45,5 @@ async function deleteGameRoom(roomId) {
     .promise();
   return result;
 }
-S;
+
+module.exports = { getGameRoom, putGameRoom, deleteGameRoom };
