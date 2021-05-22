@@ -53,8 +53,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: "roomId"
             AttributeType: "S"
-          - AttributeName: "roomData"
-            AttributeType: "S"
         TimeToLiveSpecification:
           AttributeName: "TTL"
           Enabled: true
@@ -62,6 +60,7 @@ resources:
         KeySchema:
           - AttributeName: "roomId"
             KeyType: HASH
+
     GameRoomsRole:    
       Type: AWS::IAM::Role
       Properties:
