@@ -1,0 +1,17 @@
+name: Deploy
+
+on: [push]
+
+jobs:
+  deploy-aws:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Installs serverless CLI
+        run: npm install serverless
+      - name: Install Node Dependencies 
+        run: npm install
+      - run: serverless deploy
