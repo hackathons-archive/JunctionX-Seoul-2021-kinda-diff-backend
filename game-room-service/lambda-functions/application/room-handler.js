@@ -28,10 +28,18 @@ exports.join = async (event, context, callback) => {
     return;
   }
 
-  let gameRoom = await getGameRoom(pathParam.roomId);
+  const gameRoom = await getGameRoom(pathParam.roomId);
   if (!gameRoom) {
     response.statusCode = 404;
     response.body = 'Invalid roomId';
+    callback(null, response);
+    return;
+  }
+
+  const RoomCondition = await checkRoomCondition(pathParam.roomId);
+  if (!RoomCondition) {
+    response.statusCode = 404;
+    response.body = 'Room Full';
     callback(null, response);
     return;
   }
@@ -114,6 +122,17 @@ exports.endRoom = async (event, context, callback) => {
   response.body = JSON.stringify(endGameRoom(pathParam.roomId));
   console.info('end Room > response:', JSON.stringify(response, null, 2));
   callback(null, response);
+};
+
+const checkRoomCondition = async (roomId) => {
+  const ListAttendees = await chime.listAttendees({
+    meetingId: roomId,
+  });
+  if (ListAttendees.Attendees.length < 3) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 const endGameRoom = async (roomId) => {
