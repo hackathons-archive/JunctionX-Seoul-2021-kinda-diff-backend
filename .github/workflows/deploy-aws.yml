@@ -11,7 +11,7 @@ jobs:
         with:
           node-version: 12
       - name: Installs serverless CLI
-        run: npm install serverless
+        run: npm install serverless -g
       - name: Install Node Dependencies 
         run: npm install
       - run: serverless deploy
