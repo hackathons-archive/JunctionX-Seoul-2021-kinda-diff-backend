@@ -46,31 +46,6 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    ChimeRoomAccessPolicy:
-      Type: AWS::IAM::Policy
-      Properties:
-        PolicyName: ChimeRoomAccess
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - 'chime:CreateMeeting'
-                - 'chime:DeleteMeeting'
-                - 'chime:GetMeeting'
-                - 'chime:ListMeetings'
-                - 'chime:BatchCreateAttendee'
-                - 'chime:CreateAttendee'
-                - 'chime:DeleteAttendee'
-                - 'chime:GetAttendee'
-                - 'chime:ListAttendees'
-              Resource: '*'
-        Roles:
-          - Ref: ChimeSdkJoinLambdaRole
-          - Ref: ChimeSdkAttendeeLambdaRole
-          - Ref: ChimeSdkEndLambdaRole
-          - Ref: ChimeSdkCreateMeetingLambdaRole
-          - Ref: AuthorizeFunctionRole
     GameRooms:
       Type: AWS::DynamoDB::Table
       Properties:
