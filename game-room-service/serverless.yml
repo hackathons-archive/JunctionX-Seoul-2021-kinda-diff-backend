@@ -12,6 +12,10 @@ custom:
 functions:
   hello:
     handler: handler.hello
+    events:
+      - http:
+          path: /test/hello
+          method: get
 
   join:
     handler: handler.join
@@ -19,7 +23,10 @@ functions:
     environment:
       MEETINGS_TABLE_NAME: !Ref Meetings
       CHIME_ENDPOINT: ${self:custom.chime}
-
+    events:
+      - http:
+          path: /rooms/join/{roomId}
+          method: get
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
