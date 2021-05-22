@@ -25,6 +25,8 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
 
+custom:
+  chime: "https://service.chime.aws.amazon.com"
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -60,6 +62,15 @@ provider:
 functions:
   hello:
     handler: handler.hello
+
+  join:
+    handler: handler.join
+    role: MeetingsRole
+    environment:
+      MEETINGS_TABLE_NAME: !Ref Meetings
+      CHIME_ENDPOINT: ${self:custom.chime}
+
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -101,12 +112,64 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
+resources:
+  Resources:
+    Meetings:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "Title"
+            AttributeType: "S"
+          - AttributeName: "Passcode"
+            AttributeType: "S"
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: "Title"
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: "Passcode"
+            KeySchema:
+              - AttributeName: "Passcode"
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        TimeToLiveSpecification:
+          AttributeName: "TTL"
+          Enabled: true
+    MeetingsRole:    
+      Type: AWS::IAM::Role
+      Properties:
+        Path: "/"
+        Policies:
+          -
+            PolicyName: "MeetingsRole"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "dynamodb:BatchGetItem"
+                    - "dynamodb:BatchWriteItem"
+                    - "dynamodb:PutItem"
+                    - "dynamodb:GetItem"
+                    - "dynamodb:Scan"
+                    - "dynamodb:Query"
+                    - "dynamodb:UpdateItem"
+                    - "dynamodb:UpdateTable"
+                    - "dynamodb:GetRecords"
+                  Resource: !GetAtt Meetings.Arn 
+        AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            -
+              Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+                  - dynamodb.amazonaws.com
+              Action: sts:AssumeRole
+
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
