@@ -14,7 +14,7 @@ functions:
     handler: /lambda-functions/application/room-handler.join
     role: GameRoomsRole
     environment:
-      ROOM_TABLE_NAME: !Ref GameRoom
+      ROOM_TABLE_NAME: !Ref GameRooms
       CHIME_ENDPOINT: ${self:custom.chime}
     events:
       - http:
@@ -25,7 +25,7 @@ functions:
     handler: /lambda-functions/application/room-handler.createGameRoom
     role: GameRoomsRole
     environment:
-      ROOM_TABLE_NAME: !Ref GameRoom
+      ROOM_TABLE_NAME: !Ref GameRooms
       CHIME_ENDPOINT: ${self:custom.chime}
     events:
       - http:
@@ -36,7 +36,7 @@ functions:
     handler: /lambda-functions/application/room-handler.endGameRoom
     role: GameRoomsRole
     environment:
-      ROOM_TABLE_NAME: !Ref GameRoom
+      ROOM_TABLE_NAME: !Ref GameRooms
       CHIME_ENDPOINT: ${self:custom.chime}
     events:
       - http:
@@ -47,7 +47,7 @@ functions:
     handler: /lambda-functions/application/card-handler.getTwoRandomCards
     events:
       - http:
-          path: /cards
+          path: /card
           method: GET
 
 # you can add CloudFormation resource templates here
@@ -56,7 +56,7 @@ resources:
     GameRooms:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: GameRoom
+        TableName: GameRooms
         AttributeDefinitions:
           - AttributeName: "roomId"
             AttributeType: "S"
