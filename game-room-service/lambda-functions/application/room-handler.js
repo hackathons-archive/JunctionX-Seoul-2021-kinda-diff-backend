@@ -44,8 +44,6 @@ exports.join = async (event, context, callback) => {
     return;
   }
 
-  // Create new player for the meeting
-  console.info('Adding new player');
   const player = await chime
     .createAttendee({
       MeetingId: gameRoom.Meeting.MeetingId,
@@ -86,7 +84,6 @@ exports.createGameRoom = async (event, context, callback) => {
   const room = await chime.createMeeting(request).promise();
   await putGameRoom(roomId, room);
 
-  console.info('Adding host player');
   const player = await chime
     .createAttendee({
       MeetingId: room.Meeting.MeetingId,
