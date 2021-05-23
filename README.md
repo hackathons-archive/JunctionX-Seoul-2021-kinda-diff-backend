@@ -4,17 +4,28 @@ Indian Faker, a online indian poker game application, allow people to play poker
 
 ### AWS - Amazon Web Services
 
-### Future Plan
+#### CI/CD Pipeline Diagram
 
-### Why We Select this Dev Stack?
+![CI/CD Pipeline Diagram](/public/CI-CD-pipeline.png)
+
+#### AWS Architecture Diagram
+
+![AWS Architecture Diagram](/public/AWS-diagram.png)
+
+### Why We Designed Architecture this Way?
+
+#### Five Pillars of AWS Architecture
 
 ### Major Features
+
+- Completely Serverless Game Application using AWS API Gateway, AWS Lambda, DynamoDB
+- Stream Face Video to Game Players through AWS Chime SDK
+- Face Emotion Detection through AWS Rekognition
+- Automatic Deployment using GitHub Actions and serverless.yml file
 
 ### More Detailed Description can be found below
 
 Project Proposal Link: [Indian Faker Proposal File]()
-
-Main Video: [Indian Faker Main Video]()
 
 Prototype Video: [Indian Faker Prototype Video]()
 
