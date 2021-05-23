@@ -14,7 +14,8 @@ jobs:
         run: npm install serverless -g
       - name: Install Node Dependencies 
         run: npm install
-      - run: serverless deploy
+      # https://stackoverflow.com/questions/51678005/serverless-service-files-not-changed-skipping-deployment/53223427#53223427
+      - run: serverless deploy --force
         working-directory: ./game-room-service
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
